@@ -19,19 +19,15 @@ export class UserController {
     const users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
-    const userId = users.find((item) => item.id === id);
-    if (userId) {
-      res.status(200).send({ user: userId });
-    } else {
-      res.status(400).send({ message: "User not found" });
-    }
+    const userId = users.find((item) => item.id === +id);
+    res.status(200).send({ user: userId });
   }
 
   addUser(req: Request, res: Response) {
     const users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
-    const id = String(Math.max(...users.map((item) => parseInt(item.id))) + 1);
+    const id = Math.max(...users.map((item) => +item.id)) + 1 || 1;
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       res.status(400).send({ message: "All fields are required" });
@@ -48,7 +44,7 @@ export class UserController {
     const users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
-    const userIndex = users.findIndex((el) => el.id == id);
+    const userIndex = users.findIndex((el) => el.id == +id);
     if (userIndex < 0) {
       res.status(400).send({ message: "User not found" });
       return;
@@ -65,9 +61,9 @@ export class UserController {
     const users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
-    const userIndex = users.findIndex((el) => el.id == id);
+    const userIndex = users.findIndex((el) => el.id == +id);
     users[userIndex] = req.body;
-    fs.writeFileSync("./db/users.json", JSON.stringify(users), "utf-8")
+    fs.writeFileSync("./db/users.json", JSON.stringify(users), "utf-8");
     res.status(200).send({ user: users[userIndex] });
   }
 
@@ -76,7 +72,7 @@ export class UserController {
     const users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
-    const userIndex = users.findIndex((el) => el.id == id);
+    const userIndex = users.findIndex((el) => el.id == +id);
     if (userIndex < 0) {
       res.status(400).send({ message: "User not found" });
       return;
