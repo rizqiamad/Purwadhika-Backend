@@ -13,7 +13,11 @@ export class TrackerV2Router {
 
   private initializeRoutes() {
     this.router.get('/', this.trackerV2Controller.getData)
+    this.router.post('/', this.trackerV2Controller.addData)
+
     this.router.get('/:id', this.trackerV2Controller.getDataById)
+    this.router.patch('/:id', this.trackerV2Controller.editData)
+    this.router.delete('/:id', this.trackerV2Controller.deleteData)
   }
 
   getRouter(): Router {

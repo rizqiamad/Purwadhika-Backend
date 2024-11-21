@@ -23,7 +23,15 @@ pool.connect((err, client, release) => {
   if (err) {
     return console.log("Error acquiring client", err.stack);
   }
-  console.log("success connection✅");
-  release();
+  if (client) {
+    client.query("set search_path to test", (queryErr) => {
+      if (queryErr) {
+        console.log("Error setting search path", queryErr.stack);
+      } else {
+        console.log('Success connecting to "test"✅');
+      }
+      release();
+    });
+  }
 });
-app.listen(PORT, () => console.log(`Listen in localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server is running --> http://localhost:${PORT}`));
