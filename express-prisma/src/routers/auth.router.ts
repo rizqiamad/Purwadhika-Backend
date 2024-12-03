@@ -12,7 +12,7 @@ export class AuthRouter {
   }
 
   private initializeRoutes() {
-    this.router.post("/", this.authController.registerUser);
+    this.router.post("/register", this.authController.registerUser);
     this.router.post("/login", this.authController.loginUser);
   }
 

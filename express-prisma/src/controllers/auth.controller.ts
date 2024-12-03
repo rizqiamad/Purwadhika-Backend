@@ -8,10 +8,10 @@ export class AuthController {
   async registerUser(req: Request, res: Response) {
     try {
       const { password, confirmPassword } = req.body;
-      if (password != confirmPassword) throw "Password not match!";
+      if (password != confirmPassword) throw { message: "Password not match!" };
 
       const user = await findUser(req.body.username, req.body.email);
-      if (user) throw "username or email has been used";
+      if (user) throw { message: "username or email has been used" };
 
       delete req.body.confirmPassword;
 
@@ -20,7 +20,7 @@ export class AuthController {
 
       req.body.password = hashPassword;
       await prisma.user.create({ data: req.body });
-      res.status(200).send("Register Success✅");
+      res.status(200).send({ message: "Register Success✅" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
@@ -32,19 +32,26 @@ export class AuthController {
       const { data, password } = req.body;
       const user = await findUser(data, data);
 
-      if (!user) throw "Account not found";
+      if (!user) throw { message: "Account not found" };
 
       const isValidPassword = await compare(password, user.password);
-      if (!isValidPassword) throw "Incorrect Password";
+      if (!isValidPassword) throw { message: "Incorrect Password" };
 
       const payload = { id: user.id, role: user.role };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10m" });
 
-      res.status(200).send({
-        message: "Login Successfully ✅",
-        token,
-        user,
-      });
+      res
+        .status(200)
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 24 * 3600 * 1000,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+        })
+        .send({
+          message: "Login Successfully ✅",
+          user,
+        });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
