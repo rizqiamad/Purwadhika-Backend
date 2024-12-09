@@ -15,6 +15,12 @@ enum BlogCategory {
   Tech
 }
 
+enum OrderStatus {
+  success
+  pending
+  canceled
+}
+
 enum RoleUser {
   User
   Admin
@@ -33,6 +39,7 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Blog         Blog[]
+  Order        Order[]
 }
 
 model Blog {
@@ -46,4 +53,14 @@ model Blog {
   updatedAt DateTime     @updatedAt
   userId    Int
   user      User         @relation(fields: [userId], references: [id])
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  price     Int
+  status    OrderStatus @default(pending)
+  createdAt DateTime    @default(now())
+  expiresAt DateTime    
+  user_id   Int
+  user      User        @relation(fields: [user_id], references: [id])
 }
