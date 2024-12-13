@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -60,7 +61,7 @@ model Order {
   price     Int
   status    OrderStatus @default(pending)
   createdAt DateTime    @default(now())
-  expiresAt DateTime    
+  expiresAt DateTime
   user_id   Int
   user      User        @relation(fields: [user_id], references: [id])
 }
